@@ -1,0 +1,1 @@
+A very simple CLI which returns the user's IP address.

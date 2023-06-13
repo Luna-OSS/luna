@@ -1,0 +1,110 @@
+[
+    {
+        "role": "system",
+        "content": "You program Python projects by providing every file's\ncontents, a documentation in the form of a Markdown file as well as a list of all files.\nIt is really important that also tests are provided, which check the functionality of the\nproject! The tests should check the functionality of the project, and should be created at the end.\nThe first file content to provide is the README.md file, which should contain a description of the\nproject, as well as a simple documentation on how to run the project, as well as how it works.\n\nFor example, for a web app, you should not only provide the commands to run the project, but also\nthe URL paths and what they do.\n\nKeep in mind to also use a nice CSS design if the project is a web app!\nCompletely avoid using APIs which require an API key, as this would make it impossible to run the project!\nWhenever possible, use APIs which are free to use and don't require an API key instead!\n"
+    },
+    {
+        "role": "user",
+        "content": "[FILE-STRUCTURE]: A simple website called SimpleClock. It should display the current time on /."
+    },
+    {
+        "role": "assistant",
+        "content": "main.py\nREADME.md\ntests.py\nsimpleclock/__init__.py\nsimpleclock/static/index.js\nsimpleclock/static/style.css\nsimpleclock/templates/base.html\nsimpleclock/templates/index.html\n"
+    },
+    {
+        "role": "user",
+        "content": "[FILE-CONTENT]: main.py"
+    },
+    {
+        "role": "assistant",
+        "content": "\"\"\"Web server start module.\"\"\"\n\nimport sys\n\nfrom clock import create_app\n\ndef run(port=sys.argv[1] if len(sys.argv) > 1 else 5000):\n    \"\"\"Starts the web server.\"\"\"\n    create_app().run(port=port)\n\nif __name__ == '__main__':\n    run()\n"
+    },
+    {
+        "role": "user",
+        "content": "[FILE-CONTENT]: README.md"
+    },
+    {
+        "role": "assistant",
+        "content": "# SimpleClock\nA simple web app which displays the current time.\n\n## Get started\nTo get started, follow these steps:\n\n1. Run the app using\n```bash\npython main.py\n```\n2. Open the app in your browser at http://localhost:5000\n3. Enjoy!"
+    },
+    {
+        "role": "user",
+        "content": "[FILE-CONTENT]: tests.py"
+    },
+    {
+        "role": "assistant",
+        "content": "\"\"\"LUNA Tests.\"\"\"\n\nimport time\nimport requests\nimport multiprocessing\n\nclass Tester:\n    \"\"\"Tests if the program is working as expected.\"\"\"\n\n    def __init__(self):\n        \"\"\"Runs the tests.\"\"\"\n        # pylint: disable=import-outside-toplevel\n        import main\n\n        self.server = multiprocessing.Process(target=main.run, args=(5000,))\n        self.server.start()\n\n        time.sleep(1)\n        print('Server started!')\n\n        resp = requests.get('http://localhost:5000/', timeout=5)\n        assert 'The current time is:' in resp.text\n\n    def stop(self):\n        \"\"\"Runs after the tests are done, whether they have been successful or not.\"\"\"\n        self.server.terminate()\n"
+    },
+    {
+        "role": "user",
+        "content": "[FILE-CONTENT]: simpleclock/__init__.py"
+    },
+    {
+        "role": "assistant",
+        "content": "import flask\n\ndef create_app():\n    \"\"\"Returns the Flask app.\"\"\"\n\n    app = flask.Flask(__name__)\n\n    @app.route('/')\n    def index():\n        \"\"\"Display the current time.\"\"\"\n        return flask.render_template('index.html')\n\n    return app\n"
+    },
+    {
+        "role": "user",
+        "content": "[FILE-CONTENT]: simpleclock/static/index.js"
+    },
+    {
+        "role": "assistant",
+        "content": "// use momentjs to display the time, nicely formatted.\n// updates every second\n\nfunction update() {\n    time.innerHTML = moment().format('h:mm:ss a');\n    }\n\nupdate();\nsetInterval(update, 1000);\n"
+    },
+    {
+        "role": "user",
+        "content": "[FILE-CONTENT]: simpleclock/static/style.css"
+    },
+    {
+        "role": "assistant",
+        "content": "body {\n    font-size: 1.2rem;\n    scroll-behavior: smooth;\n}\n\n* {\n    box-sizing: border-box;\n    font-family: sans-serif;\n}\n\nmain {\n    max-width: 800px;\n    margin: 0 auto;\n    padding: 1rem;\n}\n\nh1 {\n    font-size: 2rem;\n}\n\np {\n    font-size: 1.2rem;\n}\n\n#time {\n    font-weight: bold;\n}\n"
+    },
+    {
+        "role": "user",
+        "content": "[FILE-CONTENT]: simpleclock/templates/base.html"
+    },
+    {
+        "role": "assistant",
+        "content": "<!DOCTYPE html>\n<html>\n<head>\n    <title>SimpleClock</title>\n    <link rel=\"stylesheet\" href=\"{{ url_for('static', filename='style.css') }}\">\n</head>\n<body>\n    <main>\n        {% block content %}\n        {% endblock %}\n    </main>\n    <script src=\"https://cdn.jsdelivr.net/npm/moment/moment.min.js\"></script>\n    <script src=\"{{ url_for('static', filename='index.js') }}\"></script>\n</body>\n</html>"
+    },
+    {
+        "role": "user",
+        "content": "[FILE-CONTENT]: simpleclock/templates/index.html"
+    },
+    {
+        "role": "assistant",
+        "content": "{% extends 'base.html' %}\n{% block content %}\n    <h1>SimpleClock</h1>\n    <p>Welcome to this website!</p>\n    <p>The current time is: <span id=\"time\"></span>.</p>\n{% endblock %}"
+    },
+    {
+        "role": "user",
+        "content": "[FILE-STRUCTURE]: A very simple CLI which returns the user's IP address."
+    },
+    {
+        "role": "assistant",
+        "content": "cli.py\nREADME.md\ntests.py\n"
+    },
+    {
+        "role": "user",
+        "content": "[FILE-CONTENT]: cli.py"
+    },
+    {
+        "role": "assistant",
+        "content": "\"\"\"Get the IP address of the client.\"\"\"\n\nimport typer\nimport requests\n\napp = typer.Typer()\n\n@app.command()\ndef main():\n    \"\"\"Shows the IP address of the client.\"\"\"\n    print(requests.get('https://checkip.amazonaws.com', timeout=5).text.strip())\n\nif __name__ == '__main__':\n    typer.run(main)\n"
+    },
+    {
+        "role": "user",
+        "content": "[FILE-CONTENT]: README.md"
+    },
+    {
+        "role": "assistant",
+        "content": "# `GetIP`\nA very simple CLI app that displays the user's IP address.\n\n## Get started\nIt's very simple to run this app. Just run the following command in the terminal:\n\n```bash\npython cli.py\n```\n\nExample output:\n```\n123.123.34.34\n```\n"
+    },
+    {
+        "role": "user",
+        "content": "[FILE-CONTENT]: tests.py"
+    },
+    {
+        "role": "assistant",
+        "content": "\"\"\"LUNA Tests.\"\"\"\n\nimport os\nimport requests\nimport subprocess\n\nclass Tester:\n    \"\"\"Tests if the program is working as expected.\"\"\"\n\n    def __init__(self):\n        \"\"\"Runs the tests.\"\"\"\n\n        # check the print output of cli.app.main()\n        os.chdir(os.path.dirname(__file__))\n        output = subprocess.check_output(['python', 'cli.py']).decode('utf8')\n\n        ip_addr = requests.get('https://checkip.amazonaws.com', timeout=5).text.strip()\n        assert ip_addr in output\n\n    def stop(self):\n        \"\"\"Runs after the tests are done, whether they have been successful or not.\"\"\"\n        # no need to stop anything\n"
+    }
+]

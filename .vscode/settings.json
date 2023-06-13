@@ -1,0 +1,22 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        ".vscode": true,
+        "luna/__pycache__": true,
+        "luna/training/clock/clock/__pycache__": true,
+        "luna/training/clock/__pycache__": true,
+        "luna/training/getip/__pycache__": true
+    },
+    "hide-files.files": [
+        ".vscode",
+        "luna/__pycache__",
+        "luna/training/clock/clock/__pycache__",
+        "luna/training/clock/__pycache__",
+        "luna/training/getip/__pycache__"
+    ]
+}
